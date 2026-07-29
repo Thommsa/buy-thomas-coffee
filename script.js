@@ -5,11 +5,11 @@
   // Exponential thresholds (order of magnitude harder each time)
   const LEVEL_THRESHOLDS = [0, 10, 100, 1000, 10000, 100000, 1000000, 10000000];
 
-  const nastyTexts = [
+  // Texts get filthier the more you click
+  const textsMild = [
     "BUMP!",
     "SMASH!",
     "PUNCH!",
-    "FISTED!",
     "HARDER!",
     "TAKE THAT!",
     "OW YEAH!",
@@ -21,35 +21,27 @@
     "RIGHT IN THE FEELS!",
     "GET FISTED!",
     "NO MERCY!",
-    "THAT'S A BUMP!",
     "FIST OF FURY!",
-    "HANDSHAKE FROM HELL!",
-    "BONE CRUNCH!",
     "YEET THE FIST!",
     "ABSOLUTE UNIT!",
-    "FIST MODE ENGAGED!",
     "CONTACT!",
-    "DIRTY BUMP!",
-    "SWEATY KNUCKLES!",
     "BRO FIST!",
     "RESPECT +1",
     "ANOTHER ONE!",
     "KEEP GOING!",
     "DON'T STOP!",
-    "FILTHY!",
-    "NASTY!",
-    "RAW!",
-    "UNHINGED!",
-    "CHAOTIC GOOD!",
-    "FISTBUMP OF DOOM!",
-    // swearing every now and then
+    "HAIL MARY!",
+    "FOR EARTH!",
+    "SOLVE IT!"
+  ];
+
+  const textsSpicy = [
     "FUCK YEAH!",
     "HOLY SHIT!",
     "WHAT THE FUCK!",
     "BADASS!",
     "MOTHERFUCKER!",
     "SHIT YEAH!",
-    "DAMN!",
     "HELL YEAH!",
     "SON OF A BITCH!",
     "FUCKING LEGEND!",
@@ -57,21 +49,121 @@
     "CUNTPUNCH!",
     "BALLSY!",
     "SAVAGE!",
-    "GO HARD OR GO HOME!",
-    "THIS IS FUCKED!",
-    "KNUCKLE SANDWICH!",
-    "FACE MEET FIST!",
     "BOOM BITCH!",
     "EAT THIS!",
-    "RESPECT THE FIST!",
-    // Hail Mary flavored
-    "HAIL MARY!",
+    "DIRTY BUMP!",
+    "SWEATY KNUCKLES!",
+    "FILTHY!",
+    "NASTY!",
+    "RAW!",
+    "UNHINGED!",
     "SCIENCE BITCH!",
-    "FOR EARTH!",
-    "ROCKY WOULD APPROVE!",
     "ASTROPHAGE SUCKS!",
-    "SOLVE IT!",
-    "GRACE UNDER PRESSURE!"
+    "ROCKY WOULD APPROVE!",
+    "GRACE UNDER PRESSURE!",
+    "KNUCKLE SANDWICH!",
+    "FACE MEET FIST!",
+    "THIS IS FUCKED!"
+  ];
+
+  const textsFilthy = [
+    "CUNTFLAPS!",
+    "FUCK MY LIFE!",
+    "ABSOLUTE CUNT!",
+    "POES!",
+    "FOKKEN HELL!",
+    "KAK!",
+    "BLIKSEM!",
+    "DONDER!",
+    "JOL IT!",
+    "SKOP THAT!",
+    "LEKKER FOK!",
+    "BRU THAT HURT!",
+    "DOOS!",
+    "FOK JOU!",
+    "CUM THROUGH!",
+    "HARDER DADDY!",
+    "CHOKE ON IT!",
+    "GAG ON THE FIST!",
+    "SLUTTY KNUCKLES!",
+    "PORN-STAR BUMP!",
+    "DEEPSTROKE!",
+    "RAIL ME!",
+    "WRECKED!",
+    "CREAMPIE THE VOID!",
+    "SPIT ON IT!",
+    "FILTHY LITTLE BUMP!",
+    "CUNTPUNCH DELUXE!",
+    "BALLS DEEP!",
+    "ROUGHER!",
+    "MAKE IT WET!",
+    "FUCK THE SIGNAL!",
+    "HORNY SCIENCE!",
+    "THROBBING!",
+    "DRIPPING!",
+    "ABSOLUTE WHORE ENERGY!",
+    "NUTTED!",
+    "CLAP THOSE CHEEKS!",
+    "RAUNCHY AS KAK!",
+    "FOKKEN LEGEND!",
+    "POESKLAP!",
+    "KAKHOUSE!",
+    "MOER TOE!",
+    "JY IS 'N DOOS!",
+    "VOKKEN NICE!",
+    "SWEATY POES ENERGY!",
+    "CUMGUZZLER BUMP!",
+    "FACEFUCK THE STARS!",
+    "ASTROPHAGE MY ASS!",
+    "ROCKY LIKES IT ROUGH!",
+    "HAIL MARY YOU FILTHY ANIMAL!"
+  ];
+
+  const textsNuclear = [
+    "CUNTFLAPS OF DOOM!",
+    "FOKKEN CUNTFLAPS!",
+    "POES IN SPACE!",
+    "KAKSTORM!",
+    "BLIKSEM THE VOID!",
+    "MOER DIE FOK!",
+    "ABSOLUTE POES!",
+    "CUM-SOAKED KNUCKLES!",
+    "GAG REFLEX ACTIVATED!",
+    "BALLS-DEEP IN THE SIGNAL!",
+    "CREAMPIE THE UNIVERSE!",
+    "SLUTMODE: ENGAGED!",
+    "PORNSTAR SCIENTIST!",
+    "THROAT GOAT BUMP!",
+    "DESTROY THAT HOLE!",
+    "FILTHY SOUTH AFRICAN ENERGY!",
+    "JY IS 'N FOCKEN LEGEND!",
+    "POESKLAP FROM TAU CETI!",
+    "KAK OP JOU!",
+    "DONDER EN BLIKSEM!",
+    "LEKKER NAT!",
+    "HARDCORE AS FUCK!",
+    "WRECK MY SIGNAL!",
+    "NUT IN THE VOID!",
+    "CUNTPUNCH TO THE FACE!",
+    "SPIT-ROAST THE ASTROPHAGE!",
+    "RAIL THE SHIP!",
+    "HORNY AS KAK!",
+    "FOKKEN UNHINGED!",
+    "ABSOLUTE DEGENERATE!",
+    "MAKE ROCKY PROUD!",
+    "SCIENCE WHORE!",
+    "CUMROCKET!",
+    "DEEPTHROAT THE HAIL MARY!",
+    "POESENSIEG!",
+    "KAKHOUSE RULES!",
+    "MOER TOE BRU!",
+    "VOK JOU HARDER!",
+    "SWEATY CUNTFLAPS!",
+    "FACE FULL OF FIST!",
+    "GAPE THE SIGNAL!",
+    "RUIN ME!",
+    "ABSOLUTE FILTH!",
+    "NUCLEAR CUNT ENERGY!"
   ];
 
   const levelSubtitles = [
@@ -127,17 +219,42 @@
     return Math.min(level, MAX_LEVEL);
   }
 
-  // Continuous reward: log-scale clarity so early clicks feel good
-  // and even late-game bumps still slowly reveal the background
+  // Continuous reward: log-scale clarity
   function getClarity(total) {
     if (total <= 0) return 0;
-    // log10(total+1) / ~7.5 → ~1.0 around 30 million
     return Math.min(1, Math.log10(total + 1) / 7.5);
+  }
+
+  // The more you click, the filthier it gets
+  function getBumpText() {
+    const t = state.total;
+    let pool;
+
+    if (t < 25) {
+      // mostly mild, occasional spicy
+      pool = Math.random() < 0.25 ? textsSpicy : textsMild;
+    } else if (t < 150) {
+      // spicy becomes common, filthy starts appearing
+      const r = Math.random();
+      if (r < 0.35) pool = textsMild;
+      else if (r < 0.75) pool = textsSpicy;
+      else pool = textsFilthy;
+    } else if (t < 2000) {
+      // filthy takes over
+      const r = Math.random();
+      if (r < 0.15) pool = textsSpicy;
+      else if (r < 0.65) pool = textsFilthy;
+      else pool = textsNuclear;
+    } else {
+      // late game: pure nuclear + filthy
+      pool = Math.random() < 0.55 ? textsNuclear : textsFilthy;
+    }
+
+    return pool[Math.floor(Math.random() * pool.length)];
   }
 
   function updateBackground() {
     const c = getClarity(state.total);
-    // Map clarity → visual filters
     const blur = (48 * (1 - c)).toFixed(1) + "px";
     const bright = (0.18 + 0.82 * c).toFixed(3);
     const sat = (0.1 + 0.95 * c).toFixed(3);
@@ -171,7 +288,6 @@
     totalCountEl.textContent = state.total.toLocaleString();
     updateBackground();
 
-    // rebuild fists only if count changed
     const currentWrappers = fistsContainer.querySelectorAll(".fist-wrapper");
     if (currentWrappers.length !== state.fists.length) {
       fistsContainer.innerHTML = "";
@@ -197,7 +313,6 @@
         wrapper.appendChild(countEl);
         fistsContainer.appendChild(wrapper);
 
-        // click / touch
         const handler = (e) => {
           e.preventDefault();
           doBump(idx, fistEl, textEl, countEl);
@@ -206,7 +321,6 @@
         wrapper.addEventListener("touchstart", handler, { passive: false });
       });
     } else {
-      // just update counts
       currentWrappers.forEach((w, idx) => {
         const c = w.querySelector(".fist-count");
         if (c) c.textContent = state.fists[idx];
@@ -239,7 +353,6 @@
   }
 
   function doBump(index, fistEl, textEl, countEl) {
-    // Always count — no animation lock. Rapid taps work.
     state.fists[index] += 1;
     state.total += 1;
     save();
@@ -247,24 +360,21 @@
     const prevLevel = getLevel(state.total - 1);
     const newLevel = getLevel();
 
-    // update this fist's count immediately
     countEl.textContent = state.fists[index];
     totalCountEl.textContent = state.total.toLocaleString();
     updateBackground();
 
-    // restart animation even if still running
     fistEl.classList.remove("bumping");
-    void fistEl.offsetWidth; // reflow
+    void fistEl.offsetWidth;
     fistEl.classList.add("bumping");
     setTimeout(() => fistEl.classList.remove("bumping"), 320);
 
-    // random nasty / swear / hail-mary text
-    textEl.textContent = nastyTexts[Math.floor(Math.random() * nastyTexts.length)];
+    // filth scales with total
+    textEl.textContent = getBumpText();
     textEl.classList.remove("show");
     void textEl.offsetWidth;
     textEl.classList.add("show");
 
-    // particles on milestones or level up
     if (state.total % 10 === 0 || newLevel > prevLevel) {
       const rect = fistEl.getBoundingClientRect();
       spawnParticles(rect.left + rect.width / 2, rect.top + rect.height / 2);
@@ -272,7 +382,6 @@
 
     if (newLevel > prevLevel) {
       levelUpFlash();
-      // rebuild UI so new fist appears
       updateUI();
     }
   }
