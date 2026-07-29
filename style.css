@@ -1,0 +1,157 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(160deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  color: #e8e8e8;
+  overflow: hidden;
+  user-select: none;
+}
+
+.container {
+  text-align: center;
+  padding: 1.5rem;
+  max-width: 420px;
+  width: 100%;
+}
+
+h1 {
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  margin-bottom: 0.25rem;
+}
+
+.subtitle {
+  font-size: 0.95rem;
+  opacity: 0.7;
+  margin-bottom: 2rem;
+}
+
+.fist-area {
+  position: relative;
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 2rem;
+  cursor: pointer;
+}
+
+.fist {
+  font-size: 7rem;
+  line-height: 1;
+  transform-origin: center bottom;
+  transition: transform 0.08s ease-out;
+  filter: drop-shadow(0 8px 16px rgba(0, 0, 0, 0.4));
+  will-change: transform;
+}
+
+.fist:active,
+.fist.bumping {
+  transform: scale(0.85) translateY(12px);
+}
+
+.fist.bumping {
+  animation: fistBump 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@keyframes fistBump {
+  0%   { transform: scale(1) translateY(0) rotate(0deg); }
+  25%  { transform: scale(0.8) translateY(18px) rotate(-8deg); }
+  50%  { transform: scale(1.15) translateY(-8px) rotate(6deg); }
+  75%  { transform: scale(0.95) translateY(4px) rotate(-3deg); }
+  100% { transform: scale(1) translateY(0) rotate(0deg); }
+}
+
+.bump-text {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  transform: translateX(-50%) scale(0);
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #ff6b6b;
+  text-shadow: 0 2px 8px rgba(255, 107, 107, 0.5);
+  pointer-events: none;
+  opacity: 0;
+}
+
+.bump-text.show {
+  animation: popText 0.5s ease-out forwards;
+}
+
+@keyframes popText {
+  0%   { opacity: 0; transform: translateX(-50%) scale(0.5) translateY(10px); }
+  40%  { opacity: 1; transform: translateX(-50%) scale(1.2) translateY(-5px); }
+  100% { opacity: 0; transform: translateX(-50%) scale(1) translateY(-30px); }
+}
+
+.counter {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  border-radius: 16px;
+  padding: 1.25rem 1.5rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1.25rem;
+}
+
+.count-label {
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+}
+
+.count-number {
+  font-size: 2.75rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  color: #4ecdc4;
+  line-height: 1.1;
+}
+
+.reset-btn {
+  background: transparent;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.5);
+  padding: 0.5rem 1.25rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.reset-btn:hover {
+  border-color: rgba(255, 255, 255, 0.4);
+  color: rgba(255, 255, 255, 0.8);
+}
+
+.reset-btn:active {
+  transform: scale(0.96);
+}
+
+/* Confetti-ish particles on big milestones (optional polish) */
+.particle {
+  position: fixed;
+  pointer-events: none;
+  font-size: 1.2rem;
+  z-index: 100;
+  animation: particleFly 0.8s ease-out forwards;
+}
+
+@keyframes particleFly {
+  0%   { opacity: 1; transform: translate(0, 0) scale(1); }
+  100% { opacity: 0; transform: translate(var(--tx), var(--ty)) scale(0.3); }
+}
