@@ -1,7 +1,17 @@
 (function () {
   const STORAGE_KEY = "fistMyBumpData";
-  const BUMPS_PER_LEVEL = 10;
-  const MAX_LEVEL = 8; // sane ceiling
+  const MAX_LEVEL = 8;
+
+  // Exponential thresholds (order of magnitude harder each time)
+  // Level 1: easy (0-9)
+  // Level 2: 10+
+  // Level 3: 100+
+  // Level 4: 1,000+
+  // Level 5: 10,000+
+  // Level 6: 100,000+
+  // Level 7: 1,000,000+
+  // Level 8: 10,000,000+
+  const LEVEL_THRESHOLDS = [0, 10, 100, 1000, 10000, 100000, 1000000, 10000000];
 
   const nastyTexts = [
     "BUMP!",
@@ -39,18 +49,40 @@
     "RAW!",
     "UNHINGED!",
     "CHAOTIC GOOD!",
-    "FISTBUMP OF DOOM!"
+    "FISTBUMP OF DOOM!",
+    // swearing every now and then
+    "FUCK YEAH!",
+    "HOLY SHIT!",
+    "WHAT THE FUCK!",
+    "BADASS!",
+    "MOTHERFUCKER!",
+    "SHIT YEAH!",
+    "DAMN!",
+    "HELL YEAH!",
+    "SON OF A BITCH!",
+    "FUCKING LEGEND!",
+    "ABSOLUTE MADLAD!",
+    "CUNTPUNCH!",
+    "BALLSY!",
+    "SAVAGE!",
+    "GO HARD OR GO HOME!",
+    "THIS IS FUCKED!",
+    "KNUCKLE SANDWICH!",
+    "FACE MEET FIST!",
+    "BOOM BITCH!",
+    "EAT THIS!",
+    "RESPECT THE FIST!"
   ];
 
   const levelSubtitles = [
-    "Level 1 — one lonely fist. Hit it.",
-    "Level 2 — two fists. Double the violence.",
+    "Level 1 — one lonely fist. Easy mode. Hit it.",
+    "Level 2 — two fists. Getting serious.",
     "Level 3 — trio of knuckles. No escape.",
     "Level 4 — four fists. Things are getting weird.",
     "Level 5 — five fists. You're committed now.",
     "Level 6 — six fists. Absolute chaos.",
     "Level 7 — seven fists. Seek help.",
-    "Level 8 — eight fists. You monster."
+    "Level 8 — eight fists. You absolute monster."
   ];
 
   const fistsContainer = document.getElementById("fistsContainer");
@@ -79,8 +111,17 @@
     localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
-  function getLevel() {
-    return Math.min(Math.floor(state.total / BUMPS_PER_LEVEL) + 1, MAX_LEVEL);
+  function getLevel(total) {
+    const t = total === undefined ? state.total : total;
+    let level = 1;
+    for (let i = 1; i < LEVEL_THRESHOLDS.length; i++) {
+      if (t >= LEVEL_THRESHOLDS[i]) {
+        level = i + 1;
+      } else {
+        break;
+      }
+    }
+    return Math.min(level, MAX_LEVEL);
   }
 
   function ensureFists() {
@@ -88,7 +129,6 @@
     while (state.fists.length < level) {
       state.fists.push(0);
     }
-    // if somehow over, keep them
   }
 
   function updateUI() {
@@ -172,7 +212,7 @@
     state.total += 1;
     save();
 
-    const prevLevel = Math.min(Math.floor((state.total - 1) / BUMPS_PER_LEVEL) + 1, MAX_LEVEL);
+    const prevLevel = getLevel(state.total - 1);
     const newLevel = getLevel();
 
     // update this fist's count immediately
@@ -185,13 +225,13 @@
     fistEl.classList.add("bumping");
     setTimeout(() => fistEl.classList.remove("bumping"), 320);
 
-    // random nasty text
+    // random nasty / swear text
     textEl.textContent = nastyTexts[Math.floor(Math.random() * nastyTexts.length)];
     textEl.classList.remove("show");
     void textEl.offsetWidth;
     textEl.classList.add("show");
 
-    // particles every 10 total or on level up
+    // particles on milestones or level up
     if (state.total % 10 === 0 || newLevel > prevLevel) {
       const rect = fistEl.getBoundingClientRect();
       spawnParticles(rect.left + rect.width / 2, rect.top + rect.height / 2);
