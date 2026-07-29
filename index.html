@@ -4,17 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>👊 Fist My Bump</title>
-  <meta name="description" content="Tap the fists. Level up. Get nasty.">
-  <meta name="theme-color" content="#1a1a2e">
+  <meta name="description" content="Tap the fists. Level up. Get nasty. Slowly reveal the Hail Mary.">
+  <meta name="theme-color" content="#0a0a1a">
   <!-- Favicon: fist emoji via SVG -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👊</text></svg>">
   <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👊</text></svg>">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Background reveal layer (Project Hail Mary inspired) -->
+  <div class="bg-reveal" id="bgReveal" aria-hidden="true">
+    <div class="stars" id="stars"></div>
+    <div class="poster-content">
+      <div class="poster-title">PROJECT<br>HAIL MARY</div>
+      <div class="poster-tagline">Believe in the hail mary</div>
+      <div class="poster-astro">🧑‍🚀</div>
+    </div>
+  </div>
+
   <div class="container">
     <h1>👊 Fist My Bump</h1>
-    <p class="subtitle" id="subtitle">Level 1 — one lonely fist. Hit it.</p>
+    <p class="subtitle" id="subtitle">Level 1 — one lonely fist. Easy mode. Hit it.</p>
 
     <div class="level-badge" id="levelBadge">LEVEL 1</div>
 
@@ -25,6 +35,12 @@
     <div class="total-counter">
       <span class="count-label">Total bumps</span>
       <span class="count-number" id="totalCount">0</span>
+    </div>
+
+    <div class="clarity-meter">
+      <span class="clarity-label">Signal clarity</span>
+      <div class="clarity-bar"><div class="clarity-fill" id="clarityFill"></div></div>
+      <span class="clarity-pct" id="clarityPct">0%</span>
     </div>
 
     <button class="reset-btn" id="resetBtn" title="Reset everything">Reset all</button>

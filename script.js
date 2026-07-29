@@ -3,14 +3,6 @@
   const MAX_LEVEL = 8;
 
   // Exponential thresholds (order of magnitude harder each time)
-  // Level 1: easy (0-9)
-  // Level 2: 10+
-  // Level 3: 100+
-  // Level 4: 1,000+
-  // Level 5: 10,000+
-  // Level 6: 100,000+
-  // Level 7: 1,000,000+
-  // Level 8: 10,000,000+
   const LEVEL_THRESHOLDS = [0, 10, 100, 1000, 10000, 100000, 1000000, 10000000];
 
   const nastyTexts = [
@@ -71,7 +63,15 @@
     "FACE MEET FIST!",
     "BOOM BITCH!",
     "EAT THIS!",
-    "RESPECT THE FIST!"
+    "RESPECT THE FIST!",
+    // Hail Mary flavored
+    "HAIL MARY!",
+    "SCIENCE BITCH!",
+    "FOR EARTH!",
+    "ROCKY WOULD APPROVE!",
+    "ASTROPHAGE SUCKS!",
+    "SOLVE IT!",
+    "GRACE UNDER PRESSURE!"
   ];
 
   const levelSubtitles = [
@@ -90,6 +90,9 @@
   const levelBadge = document.getElementById("levelBadge");
   const subtitle = document.getElementById("subtitle");
   const resetBtn = document.getElementById("resetBtn");
+  const bgReveal = document.getElementById("bgReveal");
+  const clarityFill = document.getElementById("clarityFill");
+  const clarityPct = document.getElementById("clarityPct");
 
   // state: { total: number, fists: number[] }
   let state = load();
@@ -124,6 +127,34 @@
     return Math.min(level, MAX_LEVEL);
   }
 
+  // Continuous reward: log-scale clarity so early clicks feel good
+  // and even late-game bumps still slowly reveal the background
+  function getClarity(total) {
+    if (total <= 0) return 0;
+    // log10(total+1) / ~7.5 → ~1.0 around 30 million
+    return Math.min(1, Math.log10(total + 1) / 7.5);
+  }
+
+  function updateBackground() {
+    const c = getClarity(state.total);
+    // Map clarity → visual filters
+    const blur = (48 * (1 - c)).toFixed(1) + "px";
+    const bright = (0.18 + 0.82 * c).toFixed(3);
+    const sat = (0.1 + 0.95 * c).toFixed(3);
+    const scale = (0.90 + 0.12 * c).toFixed(3);
+    const opacity = (0.22 + 0.78 * c).toFixed(3);
+
+    bgReveal.style.setProperty("--blur", blur);
+    bgReveal.style.setProperty("--bright", bright);
+    bgReveal.style.setProperty("--sat", sat);
+    bgReveal.style.setProperty("--scale", scale);
+    bgReveal.style.setProperty("--poster-opacity", opacity);
+
+    const pct = Math.round(c * 100);
+    clarityFill.style.width = pct + "%";
+    clarityPct.textContent = pct + "%";
+  }
+
   function ensureFists() {
     const level = getLevel();
     while (state.fists.length < level) {
@@ -138,6 +169,7 @@
     levelBadge.textContent = "LEVEL " + level;
     subtitle.textContent = levelSubtitles[Math.min(level - 1, levelSubtitles.length - 1)] || levelSubtitles[levelSubtitles.length - 1];
     totalCountEl.textContent = state.total.toLocaleString();
+    updateBackground();
 
     // rebuild fists only if count changed
     const currentWrappers = fistsContainer.querySelectorAll(".fist-wrapper");
@@ -183,7 +215,7 @@
   }
 
   function spawnParticles(x, y) {
-    const emojis = ["✨", "💥", "👊", "⭐", "🔥", "💢"];
+    const emojis = ["✨", "💥", "👊", "⭐", "🔥", "💢", "🚀", "🌌"];
     for (let i = 0; i < 7; i++) {
       const p = document.createElement("span");
       p.className = "particle";
@@ -218,6 +250,7 @@
     // update this fist's count immediately
     countEl.textContent = state.fists[index];
     totalCountEl.textContent = state.total.toLocaleString();
+    updateBackground();
 
     // restart animation even if still running
     fistEl.classList.remove("bumping");
@@ -225,7 +258,7 @@
     fistEl.classList.add("bumping");
     setTimeout(() => fistEl.classList.remove("bumping"), 320);
 
-    // random nasty / swear text
+    // random nasty / swear / hail-mary text
     textEl.textContent = nastyTexts[Math.floor(Math.random() * nastyTexts.length)];
     textEl.classList.remove("show");
     void textEl.offsetWidth;
@@ -247,7 +280,7 @@
   resetBtn.addEventListener("click", function (e) {
     e.stopPropagation();
     if (state.total === 0) return;
-    if (confirm("Reset ALL fists and the total count to zero?\n\nYour knuckles will be sad.")) {
+    if (confirm("Reset ALL fists and the total count to zero?\n\nYour knuckles will be sad.\nThe signal will go dark again.")) {
       state = { total: 0, fists: [0] };
       save();
       updateUI();
