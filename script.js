@@ -1,83 +1,219 @@
 (function () {
-  const STORAGE_KEY = "fistMyBumpCount";
+  const STORAGE_KEY = "fistMyBumpData";
+  const BUMPS_PER_LEVEL = 10;
+  const MAX_LEVEL = 8; // sane ceiling
 
-  const fist = document.getElementById("fist");
-  const fistArea = document.getElementById("fistArea");
-  const bumpText = document.getElementById("bumpText");
-  const countEl = document.getElementById("count");
+  const nastyTexts = [
+    "BUMP!",
+    "SMASH!",
+    "PUNCH!",
+    "FISTED!",
+    "HARDER!",
+    "TAKE THAT!",
+    "OW YEAH!",
+    "CRUSH IT!",
+    "KNUCKLE!",
+    "BOOM!",
+    "SLAM!",
+    "POW!",
+    "RIGHT IN THE FEELS!",
+    "GET FISTED!",
+    "NO MERCY!",
+    "THAT'S A BUMP!",
+    "FIST OF FURY!",
+    "HANDSHAKE FROM HELL!",
+    "BONE CRUNCH!",
+    "YEET THE FIST!",
+    "ABSOLUTE UNIT!",
+    "FIST MODE ENGAGED!",
+    "CONTACT!",
+    "DIRTY BUMP!",
+    "SWEATY KNUCKLES!",
+    "BRO FIST!",
+    "RESPECT +1",
+    "ANOTHER ONE!",
+    "KEEP GOING!",
+    "DON'T STOP!",
+    "FILTHY!",
+    "NASTY!",
+    "RAW!",
+    "UNHINGED!",
+    "CHAOTIC GOOD!",
+    "FISTBUMP OF DOOM!"
+  ];
+
+  const levelSubtitles = [
+    "Level 1 — one lonely fist. Hit it.",
+    "Level 2 — two fists. Double the violence.",
+    "Level 3 — trio of knuckles. No escape.",
+    "Level 4 — four fists. Things are getting weird.",
+    "Level 5 — five fists. You're committed now.",
+    "Level 6 — six fists. Absolute chaos.",
+    "Level 7 — seven fists. Seek help.",
+    "Level 8 — eight fists. You monster."
+  ];
+
+  const fistsContainer = document.getElementById("fistsContainer");
+  const totalCountEl = document.getElementById("totalCount");
+  const levelBadge = document.getElementById("levelBadge");
+  const subtitle = document.getElementById("subtitle");
   const resetBtn = document.getElementById("resetBtn");
 
-  let count = parseInt(localStorage.getItem(STORAGE_KEY) || "0", 10);
-  let isAnimating = false;
+  // state: { total: number, fists: number[] }
+  let state = load();
 
-  function updateDisplay() {
-    countEl.textContent = count.toLocaleString();
+  function load() {
+    try {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (raw) {
+        const parsed = JSON.parse(raw);
+        if (parsed && typeof parsed.total === "number" && Array.isArray(parsed.fists)) {
+          return parsed;
+        }
+      }
+    } catch (e) {}
+    return { total: 0, fists: [0] };
   }
 
   function save() {
-    localStorage.setItem(STORAGE_KEY, String(count));
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
   }
 
-  function spawnParticles() {
-    const emojis = ["✨", "💥", "👊", "⭐"];
-    const rect = fist.getBoundingClientRect();
-    const cx = rect.left + rect.width / 2;
-    const cy = rect.top + rect.height / 2;
+  function getLevel() {
+    return Math.min(Math.floor(state.total / BUMPS_PER_LEVEL) + 1, MAX_LEVEL);
+  }
 
-    for (let i = 0; i < 6; i++) {
+  function ensureFists() {
+    const level = getLevel();
+    while (state.fists.length < level) {
+      state.fists.push(0);
+    }
+    // if somehow over, keep them
+  }
+
+  function updateUI() {
+    ensureFists();
+    const level = getLevel();
+
+    levelBadge.textContent = "LEVEL " + level;
+    subtitle.textContent = levelSubtitles[Math.min(level - 1, levelSubtitles.length - 1)] || levelSubtitles[levelSubtitles.length - 1];
+    totalCountEl.textContent = state.total.toLocaleString();
+
+    // rebuild fists only if count changed
+    const currentWrappers = fistsContainer.querySelectorAll(".fist-wrapper");
+    if (currentWrappers.length !== state.fists.length) {
+      fistsContainer.innerHTML = "";
+      state.fists.forEach((count, idx) => {
+        const wrapper = document.createElement("div");
+        wrapper.className = "fist-wrapper";
+        wrapper.dataset.index = idx;
+
+        const textEl = document.createElement("div");
+        textEl.className = "bump-text";
+        textEl.textContent = "BUMP!";
+
+        const fistEl = document.createElement("div");
+        fistEl.className = "fist";
+        fistEl.textContent = "👊";
+
+        const countEl = document.createElement("div");
+        countEl.className = "fist-count";
+        countEl.textContent = count;
+
+        wrapper.appendChild(textEl);
+        wrapper.appendChild(fistEl);
+        wrapper.appendChild(countEl);
+        fistsContainer.appendChild(wrapper);
+
+        // click / touch
+        const handler = (e) => {
+          e.preventDefault();
+          doBump(idx, fistEl, textEl, countEl);
+        };
+        wrapper.addEventListener("click", handler);
+        wrapper.addEventListener("touchstart", handler, { passive: false });
+      });
+    } else {
+      // just update counts
+      currentWrappers.forEach((w, idx) => {
+        const c = w.querySelector(".fist-count");
+        if (c) c.textContent = state.fists[idx];
+      });
+    }
+  }
+
+  function spawnParticles(x, y) {
+    const emojis = ["✨", "💥", "👊", "⭐", "🔥", "💢"];
+    for (let i = 0; i < 7; i++) {
       const p = document.createElement("span");
       p.className = "particle";
       p.textContent = emojis[Math.floor(Math.random() * emojis.length)];
-      const angle = (Math.PI * 2 * i) / 6 + Math.random() * 0.5;
-      const dist = 60 + Math.random() * 40;
-      p.style.left = cx + "px";
-      p.style.top = cy + "px";
+      const angle = (Math.PI * 2 * i) / 7 + Math.random() * 0.6;
+      const dist = 50 + Math.random() * 50;
+      p.style.left = x + "px";
+      p.style.top = y + "px";
       p.style.setProperty("--tx", Math.cos(angle) * dist + "px");
       p.style.setProperty("--ty", Math.sin(angle) * dist + "px");
       document.body.appendChild(p);
-      setTimeout(() => p.remove(), 800);
+      setTimeout(() => p.remove(), 750);
     }
   }
 
-  function doBump() {
-    if (isAnimating) return;
-    isAnimating = true;
+  function levelUpFlash() {
+    const flash = document.createElement("div");
+    flash.className = "level-up-flash";
+    document.body.appendChild(flash);
+    setTimeout(() => flash.remove(), 700);
+  }
 
-    count += 1;
-    updateDisplay();
+  function doBump(index, fistEl, textEl, countEl) {
+    // Always count — no animation lock. Rapid taps work.
+    state.fists[index] += 1;
+    state.total += 1;
     save();
 
-    fist.classList.add("bumping");
-    bumpText.classList.remove("show");
-    // force reflow so animation restarts
-    void bumpText.offsetWidth;
-    bumpText.classList.add("show");
+    const prevLevel = Math.min(Math.floor((state.total - 1) / BUMPS_PER_LEVEL) + 1, MAX_LEVEL);
+    const newLevel = getLevel();
 
-    if (count % 10 === 0) {
-      spawnParticles();
+    // update this fist's count immediately
+    countEl.textContent = state.fists[index];
+    totalCountEl.textContent = state.total.toLocaleString();
+
+    // restart animation even if still running
+    fistEl.classList.remove("bumping");
+    void fistEl.offsetWidth; // reflow
+    fistEl.classList.add("bumping");
+    setTimeout(() => fistEl.classList.remove("bumping"), 320);
+
+    // random nasty text
+    textEl.textContent = nastyTexts[Math.floor(Math.random() * nastyTexts.length)];
+    textEl.classList.remove("show");
+    void textEl.offsetWidth;
+    textEl.classList.add("show");
+
+    // particles every 10 total or on level up
+    if (state.total % 10 === 0 || newLevel > prevLevel) {
+      const rect = fistEl.getBoundingClientRect();
+      spawnParticles(rect.left + rect.width / 2, rect.top + rect.height / 2);
     }
 
-    setTimeout(() => {
-      fist.classList.remove("bumping");
-      isAnimating = false;
-    }, 350);
+    if (newLevel > prevLevel) {
+      levelUpFlash();
+      // rebuild UI so new fist appears
+      updateUI();
+    }
   }
-
-  fistArea.addEventListener("click", doBump);
-  fistArea.addEventListener("touchstart", function (e) {
-    e.preventDefault();
-    doBump();
-  }, { passive: false });
 
   resetBtn.addEventListener("click", function (e) {
     e.stopPropagation();
-    if (count === 0) return;
-    if (confirm("Reset your fist bump count to zero?")) {
-      count = 0;
-      updateDisplay();
+    if (state.total === 0) return;
+    if (confirm("Reset ALL fists and the total count to zero?\n\nYour knuckles will be sad.")) {
+      state = { total: 0, fists: [0] };
       save();
+      updateUI();
     }
   });
 
-  updateDisplay();
+  // init
+  updateUI();
 })();

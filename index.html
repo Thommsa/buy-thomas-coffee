@@ -3,25 +3,31 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>Fist My Bump</title>
+  <title>👊 Fist My Bump</title>
+  <meta name="description" content="Tap the fists. Level up. Get nasty.">
+  <meta name="theme-color" content="#1a1a2e">
+  <!-- Favicon: fist emoji via SVG -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👊</text></svg>">
+  <link rel="apple-touch-icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>👊</text></svg>">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container">
     <h1>👊 Fist My Bump</h1>
-    <p class="subtitle">Tap the fist to bump!</p>
+    <p class="subtitle" id="subtitle">Level 1 — one lonely fist. Hit it.</p>
 
-    <div class="fist-area" id="fistArea">
-      <div class="fist" id="fist">👊</div>
-      <div class="bump-text" id="bumpText">BUMP!</div>
+    <div class="level-badge" id="levelBadge">LEVEL 1</div>
+
+    <div class="fists-container" id="fistsContainer">
+      <!-- fists injected by JS -->
     </div>
 
-    <div class="counter">
-      <span class="count-label">Fist bumps given</span>
-      <span class="count-number" id="count">0</span>
+    <div class="total-counter">
+      <span class="count-label">Total bumps</span>
+      <span class="count-number" id="totalCount">0</span>
     </div>
 
-    <button class="reset-btn" id="resetBtn" title="Reset counter">Reset</button>
+    <button class="reset-btn" id="resetBtn" title="Reset everything">Reset all</button>
   </div>
 
   <script src="script.js"></script>
