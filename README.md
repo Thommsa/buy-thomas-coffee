@@ -20,21 +20,6 @@ Themed as a playful nod to *Project Hail Mary* — a blurred space “poster” 
 - Sparkles & level-up flash
 - Fist emoji as favicon / browser icon
 
-## How levels work (exponential)
-
-| Total bumps   | Level | Fists shown |
-|---------------|-------|-------------|
-| 0 – 9         | 1     | 1           |
-| 10 – 99       | 2     | 2           |
-| 100 – 999     | 3     | 3           |
-| 1,000 – 9,999 | 4     | 4           |
-| 10,000 – 99,999 | 5   | 5           |
-| 100,000 – 999,999 | 6 | 6         |
-| 1,000,000 – 9,999,999 | 7 | 7     |
-| 10,000,000+   | 8     | 8           |
-
-Level 1 is easy. After that it gets exponentially harder (order of magnitude).
-
 Clarity uses a log scale so early clicks give big visual feedback and millions of bumps still slowly sharpen the background.
 
 ## Files
