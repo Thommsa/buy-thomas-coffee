@@ -2,8 +2,16 @@
   const STORAGE_KEY = "fistMyBumpData";
   const MAX_LEVEL = 8;
 
-  // Exponential thresholds (order of magnitude harder each time)
-  const LEVEL_THRESHOLDS = [0, 10, 100, 1000, 10000, 100000, 1000000, 10000000];
+  // Gradual difficulty (not exponential)
+  // Level 1: 0–9
+  // Level 2: 10+
+  // Level 3: 20+
+  // Level 4: 32+
+  // Level 5: 64+
+  // Level 6: 90+
+  // Level 7: 100+
+  // then continue gently
+  const LEVEL_THRESHOLDS = [0, 10, 20, 32, 64, 90, 100, 140, 200];
 
   // Texts get filthier the more you click
   const textsMild = [
@@ -168,13 +176,13 @@
 
   const levelSubtitles = [
     "Level 1 — one lonely fist. Easy mode. Hit it.",
-    "Level 2 — two fists. Getting serious.",
-    "Level 3 — trio of knuckles. No escape.",
-    "Level 4 — four fists. Things are getting weird.",
-    "Level 5 — five fists. You're committed now.",
-    "Level 6 — six fists. Absolute chaos.",
-    "Level 7 — seven fists. Seek help.",
-    "Level 8 — eight fists. You absolute monster."
+    "Level 2 — still one fist. Warming up.",
+    "Level 3 — still one fist. Getting serious.",
+    "Level 4 — still one fist. Almost there…",
+    "Level 5 — second fist unlocked. Now we're talking.",
+    "Level 6 — three fists. Absolute chaos.",
+    "Level 7 — four fists. Seek help.",
+    "Level 8 — five fists. You absolute monster."
   ];
 
   const fistsContainer = document.getElementById("fistsContainer");
@@ -219,6 +227,14 @@
     return Math.min(level, MAX_LEVEL);
   }
 
+  // Fists only start increasing after level 4
+  // Level 1–4 → 1 fist
+  // Level 5 → 2, Level 6 → 3, Level 7 → 4, Level 8 → 5
+  function getDesiredFistCount(level) {
+    if (level <= 4) return 1;
+    return level - 3;
+  }
+
   // Continuous reward: log-scale clarity
   function getClarity(total) {
     if (total <= 0) return 0;
@@ -231,22 +247,18 @@
     let pool;
 
     if (t < 25) {
-      // mostly mild, occasional spicy
       pool = Math.random() < 0.25 ? textsSpicy : textsMild;
     } else if (t < 150) {
-      // spicy becomes common, filthy starts appearing
       const r = Math.random();
       if (r < 0.35) pool = textsMild;
       else if (r < 0.75) pool = textsSpicy;
       else pool = textsFilthy;
     } else if (t < 2000) {
-      // filthy takes over
       const r = Math.random();
       if (r < 0.15) pool = textsSpicy;
       else if (r < 0.65) pool = textsFilthy;
       else pool = textsNuclear;
     } else {
-      // late game: pure nuclear + filthy
       pool = Math.random() < 0.55 ? textsNuclear : textsFilthy;
     }
 
@@ -254,6 +266,7 @@
   }
 
   function updateBackground() {
+    if (!bgReveal) return;
     const c = getClarity(state.total);
     const blur = (48 * (1 - c)).toFixed(1) + "px";
     const bright = (0.18 + 0.82 * c).toFixed(3);
@@ -267,16 +280,20 @@
     bgReveal.style.setProperty("--scale", scale);
     bgReveal.style.setProperty("--poster-opacity", opacity);
 
-    const pct = Math.round(c * 100);
-    clarityFill.style.width = pct + "%";
-    clarityPct.textContent = pct + "%";
+    if (clarityFill && clarityPct) {
+      const pct = Math.round(c * 100);
+      clarityFill.style.width = pct + "%";
+      clarityPct.textContent = pct + "%";
+    }
   }
 
   function ensureFists() {
     const level = getLevel();
-    while (state.fists.length < level) {
+    const desired = getDesiredFistCount(level);
+    while (state.fists.length < desired) {
       state.fists.push(0);
     }
+    // If we somehow have more than desired (e.g. old save), keep them
   }
 
   function updateUI() {
@@ -369,7 +386,6 @@
     fistEl.classList.add("bumping");
     setTimeout(() => fistEl.classList.remove("bumping"), 320);
 
-    // filth scales with total
     textEl.textContent = getBumpText();
     textEl.classList.remove("show");
     void textEl.offsetWidth;
