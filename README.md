@@ -1,4 +1,4 @@
-# buy me Coffee ☕️ fistbump 👊
+# buy him a ciffee ☕️
 
 A chaotic little mini-game: tap the fists to give fistbumps. Level up. Get nastier. Swear a bit. Also buy someone a coffee by doing this useless work. Thomas's first try of making an application and show it to the public. The use? Learning. 
 
