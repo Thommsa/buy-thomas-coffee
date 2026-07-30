@@ -1,4 +1,4 @@
-# 👊 Fist My Bump
+# 👊 Fist My Bump and buy me Coffee ☕️
 
 A chaotic little mini-game: tap the fists to give fistbumps. Level up. Get nastier. Swear a bit. Also buy someone a coffee by doing this useless work. Thomas's first try of making an application and show it to the public. The use? Learning. 
 
