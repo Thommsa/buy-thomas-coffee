@@ -1,6 +1,6 @@
 (function () {
   const STORAGE_KEY = "fistMyBumpData";
-  const MAX_LEVEL = 8;
+  const MAX_LEVEL = 12;
 
   // Gradual difficulty (not exponential)
   // Level 1: 0–9
@@ -10,8 +10,8 @@
   // Level 5: 64+
   // Level 6: 90+
   // Level 7: 100+
-  // then continue gently
-  const LEVEL_THRESHOLDS = [0, 10, 20, 32, 64, 90, 100, 140, 200];
+  // then continue gently toward level 10+
+  const LEVEL_THRESHOLDS = [0, 10, 20, 32, 64, 90, 100, 140, 200, 280, 380, 500, 650];
 
   // Texts get filthier the more you click
   const textsMild = [
@@ -180,9 +180,13 @@
     "Level 3 — still one fist. Getting serious.",
     "Level 4 — still one fist. Almost there…",
     "Level 5 — second fist unlocked. Now we're talking.",
-    "Level 6 — three fists. Absolute chaos.",
-    "Level 7 — four fists. Seek help.",
-    "Level 8 — five fists. You absolute monster."
+    "Level 6 — two fists. Keep going.",
+    "Level 7 — two fists. The grind continues.",
+    "Level 8 — two fists. Almost legendary.",
+    "Level 9 — two fists. One more to the third…",
+    "Level 10 — third fist unlocked. Absolute chaos.",
+    "Level 11 — three fists. Seek help.",
+    "Level 12 — three fists. You absolute monster."
   ];
 
   const fistsContainer = document.getElementById("fistsContainer");
@@ -227,12 +231,14 @@
     return Math.min(level, MAX_LEVEL);
   }
 
-  // Fists only start increasing after level 4
-  // Level 1–4 → 1 fist
-  // Level 5 → 2, Level 6 → 3, Level 7 → 4, Level 8 → 5
+  // Fist unlocks:
+  // Levels 1–4 → 1 fist
+  // Levels 5–9 → 2 fists
+  // Level 10+  → 3 fists
   function getDesiredFistCount(level) {
     if (level <= 4) return 1;
-    return level - 3;
+    if (level < 10) return 2;
+    return 3;
   }
 
   // Continuous reward: log-scale clarity
@@ -293,7 +299,6 @@
     while (state.fists.length < desired) {
       state.fists.push(0);
     }
-    // If we somehow have more than desired (e.g. old save), keep them
   }
 
   function updateUI() {
